@@ -51,6 +51,7 @@ instance Foldable NonEmptySet where
   maximum (NonEmptySet a s) = case S.lookupMax s of
     Nothing -> a
     Just m -> m
+  length (NonEmptySet _ s) = 1 + S.size s
 
 instance Ord a => Semigroup (NonEmptySet a) where
   NonEmptySet x xs <> NonEmptySet y ys = case compare x y of
