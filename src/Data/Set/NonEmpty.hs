@@ -1,6 +1,8 @@
 module Data.Set.NonEmpty
   ( NonEmptySet
   , singleton
+  , member
+  , toSet
   , toNonEmpty
   , fromNonEmpty
   ) where
@@ -24,6 +26,17 @@ singleton x = NonEmptySet x S.empty
 -- | Convert a non-empty set to a non-empty list.
 toNonEmpty :: NonEmptySet a -> NonEmpty a
 toNonEmpty (NonEmptySet x xs) = x :| S.toList xs
+
+-- | Is the element in the set?
+member :: Ord a => a -> NonEmptySet a -> Bool
+member a (NonEmptySet x xs) = S.member a xs || a == x
+
+-- | Convert a non-empty set to a set.
+toSet :: Ord a => NonEmptySet a -> S.Set a
+-- We should be able to write this without an Ord constraint.
+-- I cannot find anything in Data.Set.Internal that allows
+-- me to do an unsafe insert on the left-hand side of a set. 
+toSet (NonEmptySet x xs) = S.insert x xs
 
 -- | Create a non-empty set from a non-empty list.
 fromNonEmpty :: Ord a => NonEmpty a -> NonEmptySet a

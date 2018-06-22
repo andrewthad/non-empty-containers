@@ -1,6 +1,6 @@
 cabal-version: 2.0
 name: non-empty-containers
-version: 0.1.0.0
+version: 0.1.1.0
 description: Please see the README on GitHub at <https://github.com/andrewthad/non-empty-containers#readme>
 homepage: https://github.com/andrewthad/non-empty-containers#readme
 bug-reports: https://github.com/andrewthad/non-empty-containers/issues
@@ -19,6 +19,7 @@ source-repository head
 library
   exposed-modules:
     Data.Set.NonEmpty
+    Data.Map.NonEmpty
   hs-source-dirs: src
   build-depends:
       base >=4.11 && <5
