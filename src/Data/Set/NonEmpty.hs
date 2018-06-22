@@ -3,6 +3,7 @@ module Data.Set.NonEmpty
   , singleton
   , member
   , toSet
+  , fromSet
   , toNonEmpty
   , fromNonEmpty
   ) where
@@ -38,6 +39,10 @@ toSet :: Ord a => NonEmptySet a -> S.Set a
 -- me to do an unsafe insert on the left-hand side of a set. 
 toSet (NonEmptySet x xs) = S.insert x xs
 
+-- | Attempt to create a non-empty set from a set.
+fromSet :: Ord a => S.Set a -> Maybe (NonEmptySet a)
+fromSet s = fmap (uncurry NonEmptySet) (S.minView s)
+
 -- | Create a non-empty set from a non-empty list.
 fromNonEmpty :: Ord a => NonEmpty a -> NonEmptySet a
 fromNonEmpty (x :| xs) = case S.minView s of
@@ -65,6 +70,7 @@ instance Foldable NonEmptySet where
     Nothing -> a
     Just m -> m
   length (NonEmptySet _ s) = 1 + S.size s
+  null _ = False
 
 instance Ord a => Semigroup (NonEmptySet a) where
   NonEmptySet x xs <> NonEmptySet y ys = case compare x y of
