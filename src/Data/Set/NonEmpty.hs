@@ -8,9 +8,14 @@ module Data.Set.NonEmpty
   , fromNonEmpty
   ) where
 
-import Data.Foldable
+import Prelude hiding (foldr1,foldr)
+
 import Data.List.NonEmpty
+import Data.Semigroup.Foldable (Foldable1)
+
 import qualified Data.Set as S
+import qualified Data.Foldable as F
+import qualified Data.Semigroup.Foldable
 
 -- | A non-empty set.
 data NonEmptySet a = NonEmptySet !a !(S.Set a)
@@ -54,23 +59,42 @@ fromNonEmpty (x :| xs) = case S.minView s of
   where
   s = S.fromList xs
 
+foldr :: (a -> b -> b) -> b -> NonEmptySet a -> b
+foldr f b (NonEmptySet a m) = case S.maxView m of
+  Nothing -> f a b
+  Just (y,m') -> f a (S.foldr f (f y b) m')
+
+foldr1 :: (a -> a -> a) -> NonEmptySet a -> a
+foldr1 f (NonEmptySet a s) = case S.maxView s of
+  Nothing -> a
+  Just (m,s') -> f a (S.foldr f m s')
+
+foldMap1 :: Semigroup m => (a -> m) -> NonEmptySet a -> m
+foldMap1 f (NonEmptySet a s) = case S.maxView s of
+  Nothing -> f a
+  Just (m,s') -> f a <> S.foldr (\c d -> f c <> d) (f m) s'
+
 instance Show a => Show (NonEmptySet a) where
   showsPrec p xs = showParen (p > 10) $
     showString "fromNonEmpty " . shows (toNonEmpty xs)
 
 instance Foldable NonEmptySet where
-  fold (NonEmptySet a s) = a <> fold s
+  fold (NonEmptySet a s) = a <> F.fold s
   foldMap f (NonEmptySet a s) = f a <> foldMap f s
   foldl1 f (NonEmptySet a s) = S.foldl f a s
-  foldr1 f (NonEmptySet a s) = case S.maxView s of
-    Nothing -> a
-    Just (m,s') -> f a (S.foldr f m s')
+  foldr1 = foldr1
+  foldr = foldr
   minimum (NonEmptySet a _) = a
   maximum (NonEmptySet a s) = case S.lookupMax s of
     Nothing -> a
     Just m -> m
   length (NonEmptySet _ s) = 1 + S.size s
   null _ = False
+
+instance Foldable1 NonEmptySet where
+  toNonEmpty = toNonEmpty
+  fold1 = foldr1 (<>)
+  foldMap1 = foldMap1
 
 instance Ord a => Semigroup (NonEmptySet a) where
   NonEmptySet x xs <> NonEmptySet y ys = case compare x y of
