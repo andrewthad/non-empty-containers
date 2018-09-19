@@ -8,6 +8,7 @@ module Data.Map.NonEmpty
   , foldr1'
   , mapWithKey
   , toNonEmpty
+  , toMap
   ) where
 
 import Prelude hiding (lookup,foldr1,foldr)
@@ -90,3 +91,6 @@ mapWithKey f (NonEmptyMap k v m) = NonEmptyMap k (f k v) (M.mapWithKey f m)
 
 toNonEmpty :: NonEmptyMap k v -> NonEmpty (k,v)
 toNonEmpty (NonEmptyMap k v m) = (k,v) :| M.toList m
+
+toMap :: Ord k => NonEmptyMap k v -> M.Map k v
+toMap (NonEmptyMap k v m) = M.insert k v m
