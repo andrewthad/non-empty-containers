@@ -6,7 +6,8 @@ module Data.Map.NonEmpty
   , lookup
   , foldl1'
   , foldr1'
-  , 
+  , mapWithKey
+  , toNonEmpty
   ) where
 
 import Prelude hiding (lookup,foldr1,foldr)
@@ -83,3 +84,9 @@ foldr1' :: (v -> v -> v) -> NonEmptyMap k v -> v
 foldr1' f (NonEmptyMap _ v m) = case M.maxView m of
   Nothing -> v
   Just (y,m') -> let !k = M.foldr' f y m' in f v k
+
+mapWithKey :: (k -> v -> w) -> NonEmptyMap k v -> NonEmptyMap k w
+mapWithKey f (NonEmptyMap k v m) = NonEmptyMap k (f k v) (M.mapWithKey f m)
+
+toNonEmpty :: NonEmptyMap k v -> NonEmpty (k,v)
+toNonEmpty (NonEmptyMap k v m) = (k,v) :| M.toList m
