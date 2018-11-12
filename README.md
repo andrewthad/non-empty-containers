@@ -1,27 +1,12 @@
 # non-empty-containers
 
-`non-empty-containers` creates two new data structures NonEmptyMap and NonEmptySet
-by extending Haskell's built-in Map and Set data structures. 
+`non-empty-containers` creates two new data structures `NonEmptyMap` 
+and `NonEmptySet` by extending Haskell's built-in `Map` and `Set` 
+data structures. 
 
-`NonEmptyMap` allows a user to create Map data structures 
+`NonEmptyMap` allows a user to create `Map` data structures 
 while promising they will never be empty.
 
-`NonEmptySet` allows a user to create Set data structures
+`NonEmptySet` allows a user to create `Set` data structures
 while promising they will never be empty.
 
-List of functions for `NonEmptyMap`:
-- singleton
-- lookup
-- foldl1'
-- foldr1'
-- mapWithKey
-- toNonEmpty
-- toMap
-
-List of functions for `NonEmptySet`:
-- singleton
-- member
-- toSet
-- fromSet
-- toNonEmpty
-- fromNonEmpty
