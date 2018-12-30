@@ -1,3 +1,4 @@
+{-# LANGUAGE BangPatterns  #-}
 {-# LANGUAGE DeriveFunctor #-}
 
 module Data.Map.NonEmpty
