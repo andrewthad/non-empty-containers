@@ -12,15 +12,14 @@ module Data.Map.NonEmpty
   , toMap
   ) where
 
-import Prelude hiding (lookup,foldr1,foldr)
-import Data.Bool (bool)
-import Data.Semigroup.Foldable (Foldable1)
-import Data.List.NonEmpty (NonEmpty((:|)))
-
-import qualified Data.Foldable as F
-import qualified Data.Map as M
-import qualified Data.Map.Strict as MS
+import           Data.Bool               (bool)
+import qualified Data.Foldable           as F
+import           Data.List.NonEmpty      (NonEmpty((:|)))
+import qualified Data.Map                as M
+import qualified Data.Map.Strict         as MS
+import           Data.Semigroup.Foldable (Foldable1)
 import qualified Data.Semigroup.Foldable
+import           Prelude                 hiding (foldr, foldr1, lookup)
 
 -- | A non-empty map.
 data NonEmptyMap k v = NonEmptyMap !k v !(M.Map k v)
@@ -46,12 +45,12 @@ unionAppend (NonEmptyMap xk xv xs) (NonEmptyMap yk yv ys) = case compare xk yk o
 
 foldr1 :: (v -> v -> v) -> NonEmptyMap k v -> v
 foldr1 f (NonEmptyMap _ v m) = case M.maxView m of
-  Nothing -> v
+  Nothing     -> v
   Just (y,m') -> f v (M.foldr f y m')
 
 foldMap1 :: Semigroup m => (v -> m) -> NonEmptyMap k v -> m
 foldMap1 f (NonEmptyMap _ v m) = case M.maxView m of
-  Nothing -> f v
+  Nothing     -> f v
   Just (x,m') -> f v <> M.foldr (\c d -> f c <> d) (f x) m'
 
 instance (Ord k, Semigroup v) => Semigroup (NonEmptyMap k v) where
@@ -62,7 +61,7 @@ instance Foldable (NonEmptyMap k) where
   foldMap f (NonEmptyMap _ v m) = f v <> foldMap f m
   foldl f a (NonEmptyMap _ v m) = M.foldl f (f a v) m
   foldr f a (NonEmptyMap _ v m) = case M.maxView m of
-    Nothing -> f v a
+    Nothing     -> f v a
     Just (y,m') -> f v (M.foldr f (f y a) m')
   foldl1 f (NonEmptyMap _ v m) = M.foldl f v m
   foldr1 = foldr1
@@ -84,7 +83,7 @@ foldl1' f (NonEmptyMap _ v m) = M.foldl' f v m
 
 foldr1' :: (v -> v -> v) -> NonEmptyMap k v -> v
 foldr1' f (NonEmptyMap _ v m) = case M.maxView m of
-  Nothing -> v
+  Nothing     -> v
   Just (y,m') -> let !k = M.foldr' f y m' in f v k
 
 mapWithKey :: (k -> v -> w) -> NonEmptyMap k v -> NonEmptyMap k w
